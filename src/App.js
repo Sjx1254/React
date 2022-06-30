@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import { Navbar, NavbarBrand} from 'reactstrap'; //These are imported from ReactStrap
+import { Navbar, NavbarBrand} from 'reactstrap'; //These are imported from ReactStrap - (reconfigures some implementations and features of bootstrap to provide prebuilt components)
 import './App.css';
 
 
@@ -19,3 +19,4 @@ class App extends Component {
 }
 
 export default App;
+
