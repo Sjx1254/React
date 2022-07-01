@@ -3,9 +3,18 @@ import logo from './logo.svg';
 import { Navbar, NavbarBrand} from 'reactstrap'; //These are imported from ReactStrap - (reconfigures some implementations and features of bootstrap to provide prebuilt components)
 import './App.css';
 import Menu from './components/MenuComponent'
+import { DISHES } from './shared/dishes';
 
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dishes: DISHES
+    }
+  }
   render() {
   return (
     <div>
@@ -14,7 +23,7 @@ class App extends Component {
         <NavbarBrand href="/"> Ristorante Con Fusion</NavbarBrand> 
       </div>
       </Navbar>
-      <Menu /> 
+      <Menu dishes={this.state.dishes} /> 
     </div>
   );
   } //dark here means that the text will be light rather than dark (if light then opposite)
