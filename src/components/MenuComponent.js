@@ -39,6 +39,7 @@ class Menu extends Component {
 
     render() { //returns view/display for component
         const menu = this.props.dishes.map((dish) => {  //map iterates over each item in the list, and returns a list for each "dish"
+                                                        //we are accessing the prop dishes that was defined in the app component (leveraging a state)
             return (
                 <div key={dish.id} className="col-12 col-md-5 m-1"> 
                     <Card onClick={() => this.onDishSelect(dish)}> 
