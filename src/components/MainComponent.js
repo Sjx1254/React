@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import Home from './HomeComponent';
 import Menu from './MenuComponent'
+import Contact from './ContactComponent'
 import { DISHES } from '../shared/dishes';
-import DishDetail from './DishdetailComponent';
+import { COMMENTS } from '../shared/comments';
+import  { LEADERS } from '../shared/leaders';
+import { PROMOTIONS } from '../shared/promotions';
 import Header from './HeaderComponent'
 import Footer from './FooterComponent'
 import { Routes, Route, Navigate} from 'react-router-dom'
@@ -15,6 +18,9 @@ class Main extends Component {
 
     this.state = {
       dishes: DISHES,
+      comments: COMMENTS,
+      promotions: PROMOTIONS,
+      leaders: LEADERS,
       
     }
   }
@@ -24,7 +30,9 @@ class Main extends Component {
 
   const HomePage = () => {
     return(
-      <Home />
+      <Home dish = {this.state.dishes.filter((dish) => dish.featured) [0]}
+        promotion = {this.state.promotions.filter((promo) => promo.featured) [0]}
+        leader = {this.state.leaders.filter((leader) => leader.featured) [0]} />
     )
   }
   return (
@@ -33,6 +41,7 @@ class Main extends Component {
       <Routes>
         <Route path="/home" element={<HomePage/>} />
         <Route path="/menu" element={<Menu dishes = {this.state.dishes} />} /> 
+        <Route path="/contactus" element={<Contact />} /> 
         <Route path="*" element={<Navigate to="/home" />}/>
         
       </Routes> 
@@ -45,8 +54,12 @@ class Main extends Component {
   //The menu tag will render the menu component (below the navbar)
 
   //when onClick is clicked, the dish ID of the dish that is clicked is passed onto onDishSelect which sets the selectDish to the dishId. This is also passed as a prop to MenuComponent
-  //For dishdetail, the dish that is shown is the one which mastches the dishID (first index of the dish in reach index). This is done using the filter function, which traverses the entire array of dishes
+  //For dishdetail, the dish that is shown is the one which mastches the dishID (first index of the dish in reach index). This is done using the filter function, which removes every element of the array that doesn't have the given id. Since the output is an array also, the [0] takes the first elemt
   //exact path means that it has to match the path that it is set to (can't just start with it)
+
+  //SPA
+    //If a component has no props you can simply call it
+    //The filter command here again returns an array containing the featured dish, accessing the first element of that array with the [0]
 }
 
 export default Main;
