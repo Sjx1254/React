@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link} from 'react-router-dom'
 
-function Footer() { //we aren't using props here so no need to pass it
+function Footer(){ //we aren't using props here so no need to pass it
     return(
         <div className="footer">
             <div className="container">
@@ -8,12 +9,12 @@ function Footer() { //we aren't using props here so no need to pass it
                     <div className="col-4 offset-1 col-sm-2">
                         <h5>Links</h5>
                         <ul className="list-unstyled">
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Menu</a></li>
-                            <li><a href="contactus.html">Contact</a></li>
+                            <li><Link to="/home">Home</Link></li>
+                            <li><Link to="/aboutus">About Us</Link></li>
+                            <li><Link to="/menu">Menu</Link></li>
+                            <li><Link to ="/contactus">Contact Us</Link></li>
                         </ul>
-                    </div>
+                    </div> 
                     <div className="col-7 col-sm-5">
                         <h5>Our Address</h5>
                         <address>
@@ -32,7 +33,7 @@ function Footer() { //we aren't using props here so no need to pass it
                             <a className="btn btn-social-icon btn-facebook" href="http://www.facebook.com/profile.php?id="><i className="fa fa-facebook"></i></a>
                             <a className="btn btn-social-icon btn-linkedin" href="http://www.linkedin.com/in/"><i className="fa fa-linkedin"></i></a>
                             <a className="btn btn-social-icon btn-twitter" href="http://twitter.com/"><i className="fa fa-twitter"></i></a>
-                            <a className="btn btn-social-icon btn-google" href="http://youtube.com/"><i className="fa fa-youtube"></i></a>
+                            <a className="btn btn-social-icon btn-google" href="http://youtube.com/"><i className="fa fa-youtube"></i></a> 
                             <a className="btn btn-social-icon" href="mailto:"><i className="fa fa-envelope-o"></i></a>
                         </div>
                     </div>
@@ -43,7 +44,7 @@ function Footer() { //we aren't using props here so no need to pass it
                     </div>
                 </div>
             </div>
-        </div>
+        </div> //Link will take us to the route that matches the specified paramter after to
 
     );
 
