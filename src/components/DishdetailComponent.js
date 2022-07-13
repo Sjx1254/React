@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, CardImg, CardBody, CardTitle, CardText } from 'reactstrap';
+import { Card, CardImg, CardBody, CardTitle, CardText, Breadcrumb, BreadcrumbItem} from 'reactstrap';
+import { Link } from 'react-router-dom'
 
     function RenderDish({dish}) { //these are now props so they are objects (why they are enclosed in curly braces) (if you know what you're specifying)
         if (dish != null) {
@@ -24,9 +25,9 @@ import { Card, CardImg, CardBody, CardTitle, CardText } from 'reactstrap';
 
     }
 
-    function RenderComments({dishComments}) {
-        if (dishComments != null) {
-            const comment = dishComments.map((c) => {
+    function RenderComments({comments}) {
+        if (comments != null) {
+            const comment = comments.map((c) => {
                 return(
                     <li key = {c.id}>
                         <p>{c.comment}</p>
@@ -58,16 +59,32 @@ import { Card, CardImg, CardBody, CardTitle, CardText } from 'reactstrap';
         }
 
         return (
-
             <div className="container">
-                <div className="row">
+            <div className="row">
+                <Breadcrumb>
+
+                    <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                    <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                </Breadcrumb>
+                <div className="col-12">
+                    <h3>{props.dish.name}</h3>
+                    <hr />
+                </div>                
+            </div>
+            <div className="row">
+               
                     <RenderDish dish={props.dish} />
-                    <RenderComments dishComments={props.dish.comments} />
-                </div>
+                
+                
+                    <RenderComments comments={props.comments} />
                 
             </div>
-        )
+            </div>
+        );
     }
+
+    //SFA part 2
+        //As the comments are now a separate array/file instead of being a part of dish, this can now be changed to props.comments
 
 
 

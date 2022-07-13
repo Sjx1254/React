@@ -1,14 +1,18 @@
 import React from 'react';
-import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from 'reactstrap';
+import {Card, CardImg, CardImgOverlay,  CardTitle} from 'reactstrap';
+import { Link } from 'react-router-dom'
+import {Breadcrumb, BreadcrumbItem } from 'reactstrap'
 
-    function RenderMenuItem({dish, onClick }) { //this will now display the card for the passed in dish that is clicked
+    function RenderMenuItem({dish}) { //this will now display the card for the passed in dish that is clicked
         return (
             
-                <Card onClick={() => onClick(dish.id)}>  
-                    <CardImg width="100%" src={dish.image} alt={dish.name}/>
+                <Card>  
+                    <Link to = {`/menu/${dish.id}`} >
+                        <CardImg width="100%" src={dish.image} alt={dish.name}/>
                         <CardImgOverlay>
-                            <CardTitle>{dish.name}</CardTitle>
+                                <CardTitle>{dish.name}</CardTitle>
                         </CardImgOverlay>
+                    </Link>
                 </Card>
                     
                     
@@ -20,6 +24,9 @@ import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from 'reac
         //Update:
         //now, when the card is clicked, the onClick function from the MainComponent that was a prop is called, and this sets the dish id of the card so that it can be rendered in dishdetail
 
+        //SFA part 2
+            //The backquotes allow the code inside of it to be evaluated. The dish id of the passed in dish is the route parameter that will be added after the menu route for navigation to a particular dish
+
 
     }
 
@@ -28,7 +35,7 @@ import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from 'reac
             //we are accessing the prop dishes that was defined in the app component (leveraging a state)
             return (
                 <div key={dish.id} className="col-12 col-md-5 m-1"> 
-                    <RenderMenuItem dish={dish} onClick={props.onClick} /> 
+                    <RenderMenuItem dish={dish}/> 
                 
                 </div> //when the card is clicked, the onDishSelect function is called
             ); //the key feature allows React to identify each element uniquely and display them accordingly (you want the key to be unique for each element)
@@ -45,6 +52,19 @@ import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from 'reac
 
         return (
             <div className="container">
+                <div className="row">
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to = '/home'>Home</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>Menu</BreadcrumbItem>
+                    
+                    </Breadcrumb>
+                    <div className="col-12">
+                        <h3>Menu</h3>
+                        <hr />
+                    
+                    </div>
+                
+                </div>
                 <div className="row">
                     {menu}
                 </div>

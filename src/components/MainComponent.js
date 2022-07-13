@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Home from './HomeComponent';
 import Menu from './MenuComponent'
 import Contact from './ContactComponent'
+import DishDetail from './DishdetailComponent'
 import { DISHES } from '../shared/dishes';
 import { COMMENTS } from '../shared/comments';
 import  { LEADERS } from '../shared/leaders';
@@ -9,7 +10,7 @@ import { PROMOTIONS } from '../shared/promotions';
 import Header from './HeaderComponent'
 import Footer from './FooterComponent'
 import { Routes, Route, Navigate} from 'react-router-dom'
-
+import { useParams } from 'react-router-dom';
 
 class Main extends Component {
 
@@ -35,13 +36,23 @@ class Main extends Component {
         leader = {this.state.leaders.filter((leader) => leader.featured) [0]} />
     )
   }
+
+  const DishWithId = () => {
+    const { dishId } = useParams();
+    return(
+      <DishDetail dish={this.state.dishes.filter((dish) => dish.id === Number(dishId)) [0]} 
+        comments={this.state.comments.filter((comment) => comment.dishId === Number(dishId))}/>
+    )
+
+  }
   return (
     <div>
       <Header />
       <Routes>
         <Route path="/home" element={<HomePage/>} />
-        <Route path="/menu" element={<Menu dishes = {this.state.dishes} />} /> 
-        <Route path="/contactus" element={<Contact />} /> 
+        <Route exact path="/menu" element={<Menu dishes = {this.state.dishes} />} />
+        <Route path="/menu/:dishId" element={<DishWithId/>} />
+        <Route exact path="/contactus" element={<Contact />} /> 
         <Route path="*" element={<Navigate to="/home" />}/>
         
       </Routes> 
@@ -60,6 +71,11 @@ class Main extends Component {
   //SPA
     //If a component has no props you can simply call it
     //The filter command here again returns an array containing the featured dish, accessing the first element of that array with the [0]
+  
+  //SFA part 2
+    //Exact prevents problems with both the menu and menu/:dishId being noticed by Routes
+    //the dishId is the parameter passed in, and this must be the name of the variable when using useParams
+    //fo
 }
 
 export default Main;
