@@ -11,6 +11,7 @@ import Header from './HeaderComponent'
 import Footer from './FooterComponent'
 import { Routes, Route, Navigate} from 'react-router-dom'
 import { useParams } from 'react-router-dom';
+import About from './AboutComponent';
 
 class Main extends Component {
 
@@ -50,6 +51,7 @@ class Main extends Component {
       <Header />
       <Routes>
         <Route path="/home" element={<HomePage/>} />
+        <Route path="/aboutus" element={<About leaders = {this.state.leaders} />} />
         <Route exact path="/menu" element={<Menu dishes = {this.state.dishes} />} />
         <Route path="/menu/:dishId" element={<DishWithId/>} />
         <Route exact path="/contactus" element={<Contact />} /> 
@@ -72,7 +74,7 @@ class Main extends Component {
     //If a component has no props you can simply call it
     //The filter command here again returns an array containing the featured dish, accessing the first element of that array with the [0]
   
-  //SFA part 2
+  //SPA part 2
     //Exact prevents problems with both the menu and menu/:dishId being noticed by Routes
     //the dishId is the parameter passed in, and this must be the name of the variable when using useParams
     //fo
