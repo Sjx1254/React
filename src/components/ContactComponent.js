@@ -1,5 +1,5 @@
 import React, {Component} from 'react'; //controlled forms are only possible with class components
-import {Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col} from 'reactstrap'
+import {Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col, Row, FormFeedback} from 'reactstrap'
 import { Link } from 'react-router-dom'
 
 class Contact extends Component {
@@ -14,11 +14,19 @@ class Contact extends Component {
             email: '',
             agree: false,
             contactType: 'Tel.',
-            message: ''
+            message: '',
+            touched: { //tracks when each field has been touched or not (changed state) to signal the start of form validation
+                firstname: false,
+                lastname: false,
+                telnum: false,
+                email: false
+
+            }
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleBlur = this.handleBlur.bind(this)
     }
 
     handleInputChange(event) { //when this is invoked, the information for the input is retrieved. The names for each target are the corresponding state variables, which are changed based on the value/checked inputs. 
@@ -41,7 +49,45 @@ class Contact extends Component {
         event.preventDefault();
 
     }
+
+    handleBlur = (field) => (evt) => { //evt is needed here as the "event" is the field being touched...otherwise the program will crash
+        this.setState({
+            touched: { ...this.state.touched, [field]: true} //... means that all the other fields will remain unchanged
+                                                             //Make sure to surround the state variable in []
+        });
+    }
+
+    validate(firstname, lastname, telnum, email) {
+        const errors = {
+            firstname: '',
+            lastname: '',
+            telnum: '',
+            email: '',
+
+        };
+
+        if(this.state.touched.firstname && firstname.length < 3)
+            errors.firstname = 'First Name should be >= 3 characters';
+        else if (this.state.touched.firstname && firstname.length > 10)
+            errors.firstname = 'First Name should be <= 10 characters';
+        
+        if(this.state.touched.lastname && lastname.length < 3)
+            errors.lastname = 'Last Name should be >= 3 characters';
+        else if (this.state.touched.lastname && lastname.length > 10)
+            errors.lastname = 'Last Name should be <= 10 characters';
+        
+        const reg = /^\d+$/; //all characters in the string should be numbers
+
+        if (this.state.touched.telnum && !reg.test(telnum)) //tests to see if the string has all numbers
+            errors.telnum = 'Tel. Number should contain only numbers';
+        
+        if(this.state.touched.email && email.split('').filter(x => x === '@').length !== 1)  //makes a new array with @ symbols and checks if the length of that is only 1
+            errors.email = 'Email should contain a @'
+        
+        return errors;
+    }   
     render() {
+        const errors = this.validate(this.state.firstname, this.state.lastname, this.state.telnum, this.state.email) //call the validate function and create the errors array here
         return(
             <div className="container">
                 <div className="row">
@@ -98,7 +144,11 @@ class Contact extends Component {
                                     <Input type="text" id="firstname" name="firstname"
                                         placeholder="First Name"
                                         value={this.state.firstname}
+                                        valid={errors.firstname === ''}
+                                        invalid={errors.firstname !== ''}
+                                        onBlur={this.handleBlur('firstname')}
                                         onChange={this.handleInputChange} />
+                                    <FormFeedback>{errors.firstname} </FormFeedback> 
 
                                 </Col>
                                 
@@ -110,7 +160,11 @@ class Contact extends Component {
                                     <Input type="text" id="lastname" name="lastname"
                                         placeholder="Last Name"
                                         value={this.state.lastname}
+                                        valid={errors.lastname === ''}
+                                        invalid={errors.lastname !== ''}
+                                        onBlur={this.handleBlur('lastname')}
                                         onChange={this.handleInputChange} />
+                                        <FormFeedback>{errors.lastname} </FormFeedback>
 
                                 </Col>
                                 
@@ -122,7 +176,11 @@ class Contact extends Component {
                                     <Input type="tel" id="telnum" name="telnum"
                                         placeholder="Tel. Number"
                                         value={this.state.telnum}
+                                        valid={errors.telnum === ''}
+                                        invalid={errors.telnum !== ''}
+                                        onBlur={this.handleBlur('telnum')}
                                         onChange={this.handleInputChange} />
+                                        <FormFeedback>{errors.telnum} </FormFeedback>
 
                                 </Col>
                                 
@@ -134,7 +192,11 @@ class Contact extends Component {
                                     <Input type="email" id="email" name="email"
                                         placeholder="Email"
                                         value={this.state.email}
+                                        valid={errors.email === ''}
+                                        invalid={errors.email !== ''}
+                                        onBlur={this.handleBlur('email')}
                                         onChange={this.handleInputChange} />
+                                        <FormFeedback>{errors.email} </FormFeedback>
 
                                 </Col>
                                 
@@ -198,6 +260,9 @@ class Contact extends Component {
                 //we are changing the state of value each time the user interacts (controlled form)
                 //onChange and onSubmit are the eventHandlers use to invoke the handleInput/handleSubmit functions
                 //The bind function is needed is to link the this.handleInput to the action function to where the state wil be changed
+                //The valid/invalid change the text outline to green/red, respecitvely
+                //onBlur is used to invoke the handleBlur (when a part of the form is first touched)
+
         );
 
     }
