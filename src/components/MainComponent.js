@@ -3,46 +3,62 @@ import Home from './HomeComponent';
 import Menu from './MenuComponent'
 import Contact from './ContactComponent'
 import DishDetail from './DishdetailComponent'
-import { DISHES } from '../shared/dishes';
-import { COMMENTS } from '../shared/comments';
-import  { LEADERS } from '../shared/leaders';
-import { PROMOTIONS } from '../shared/promotions';
 import Header from './HeaderComponent'
 import Footer from './FooterComponent'
-import { Routes, Route, Navigate} from 'react-router-dom'
-import { useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate, useParams} from 'react-router-dom'
 import About from './AboutComponent';
+import { connect } from 'react-redux';
+import { DISHES } from '../shared/dishes';
 
+const mapStateToProps = (state) => { //maps the states from the redux store as props to use in the main component
+  return {
+    dishes : state.dishes,
+    comments: state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders
+  }
+
+}
+
+function withRouter(Component) { //implementation of withRouter
+  function ComponentWithRouterProp(props) {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const params = useParams();
+    return (
+      <Component
+        {...props}
+        router={{ location, navigate, params }}
+      />
+    );
+  }
+
+  return ComponentWithRouterProp;
+}
 class Main extends Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      dishes: DISHES,
-      comments: COMMENTS,
-      promotions: PROMOTIONS,
-      leaders: LEADERS,
-      
-    }
   }
+
 
 
   render() {
 
   const HomePage = () => {
     return(
-      <Home dish = {this.state.dishes.filter((dish) => dish.featured) [0]}
-        promotion = {this.state.promotions.filter((promo) => promo.featured) [0]}
-        leader = {this.state.leaders.filter((leader) => leader.featured) [0]} />
+      <Home dish = {this.props.dishes.filter((dish) => dish.featured) [0]} //Main no longer has it's own built-in state, but is rather passed in the state by the store via props
+        promotion = {this.props.promotions.filter((promo) => promo.featured) [0]}
+        leader = {this.props.leaders.filter((leader) => leader.featured) [0]} />
     )
   }
 
   const DishWithId = () => {
     const { dishId } = useParams();
     return(
-      <DishDetail dish={this.state.dishes.filter((dish) => dish.id === Number(dishId)) [0]} 
-        comments={this.state.comments.filter((comment) => comment.dishId === Number(dishId))}/>
+      <DishDetail dish={this.props.dishes.filter((dish) => dish.id === Number(dishId)) [0]} 
+        comments={this.props.comments.filter((comment) => comment.dishId === Number(dishId))}/>
     )
 
   }
@@ -51,8 +67,8 @@ class Main extends Component {
       <Header />
       <Routes>
         <Route path="/home" element={<HomePage/>} />
-        <Route path="/aboutus" element={<About leaders = {this.state.leaders} />} />
-        <Route exact path="/menu" element={<Menu dishes = {this.state.dishes} />} />
+        <Route path="/aboutus" element={<About leaders = {this.props.leaders} />} />
+        <Route exact path="/menu" element={<Menu dishes = {this.props.dishes} />} />
         <Route path="/menu/:dishId" element={<DishWithId/>} />
         <Route exact path="/contactus" element={<Contact />} /> 
         <Route path="*" element={<Navigate to="/home" />}/>
@@ -76,8 +92,8 @@ class Main extends Component {
   
   //SPA part 2
     //Exact prevents problems with both the menu and menu/:dishId being noticed by Routes
-    //the dishId is the parameter passed in, and this must be the name of the variable when using useParams
-    //fo
+    //the dishId is the route parameter passed in, and this must be the name of the variable when using useParams
+    //for the comments, since it already is an array, no [0] is needed
 }
 
-export default Main;
+export default withRouter(connect(mapStateToProps)(Main)); //connects Redux to the component
