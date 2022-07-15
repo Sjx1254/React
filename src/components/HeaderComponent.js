@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem} from 'reactstrap'; //These are imported from ReactStrap - (reconfigures some implementations and features of bootstrap to provide prebuilt components)
+import { Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, Modal, Button, ModalHeader, ModalBody, Label,
+FormGroup, Input, Form} from 'reactstrap'; //These are imported from ReactStrap - (reconfigures some implementations and features of bootstrap to provide prebuilt components)
 import { NavLink } from 'react-router-dom'
 
 class Header extends Component {
@@ -7,11 +8,15 @@ class Header extends Component {
         super(props);
 
         this.state = {
-            isNavOpen: false
+            isNavOpen: false,
+            isModalOpen: false //tracks whether the modal is open or not
         }
 
         this.toggleNav = this.toggleNav.bind(this); //this basically says that this.toggleNav will point to the function below, just so it can recognize the state of the component when it is called in JSX
-                                                    //With an arrow function you don't need to use this (simply do () => this.functionName() instead)
+        
+        this.toggleModal = this.toggleModal.bind(this); //With an arrow function you don't need to use this (simply do () => this.functionName() instead)
+
+        this.handleLogin = this.handleLogin.bind(this)
 
         
     }
@@ -21,6 +26,21 @@ class Header extends Component {
             isNavOpen: !this.state.isNavOpen
         })
 
+    }
+
+    toggleModal() { //toggler that opens and closes the modal 
+        this.setState({
+            isModalOpen: !this.state.isModalOpen
+        })
+
+    }
+
+    handleLogin(event) {
+        this.toggleModal()
+        alert("Username: " + this.username.value + " Password: " + this.password.value
+        + " Remember: " + this.remember.checked) //we are extracting the values of each of these variables from the DOM (the checkbox has the boolean check as its toggler)
+        event.preventDefault()
+        
     }
     render() {
         return(
@@ -55,6 +75,15 @@ class Header extends Component {
                                     </NavLink>
                                 </NavItem>
                             </Nav>
+                            <Nav className="ml-auto" navbar>
+                                <NavItem>
+                                    <Button outline onClick={this.toggleModal}>
+                                        <span className="fa fa-sign-in fa-lg"></span>Login
+                                    </Button>
+                                
+                                </NavItem>
+                            
+                            </Nav>
                         </Collapse> 
                     </div>
                 </Navbar> 
@@ -70,6 +99,32 @@ class Header extends Component {
                     
                     </div>
                 </div> 
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                    <ModalHeader isOpen = {this.state.isModalOpen} toggle={this.toggleModal}>Login</ModalHeader>
+                    <ModalBody>
+                        <Form onSubmit={this.handleLogin}>
+                            <FormGroup>
+                                <Label htmlFor="username">Username</Label>
+                                <Input type="text" id="username" name="username" innerRef={(input) => this.username = input} />
+                            
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor="passowrd">Password</Label>
+                                <Input type="password" id="password" name="password" innerRef={(input) => this.password = input} />
+                            
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>
+                                    <Input type="checkbox" name="remember" innerRef={(input) => this.remember = input} />
+                                    Remember Me
+                                
+                                </Label>
+                            
+                            </FormGroup>
+                            <Button type="submit" value="submit" color="primary">Login</Button>
+                        </Form>
+                    </ModalBody>
+                </Modal>
             </> 
             //Expand basically means that the entire navbar will be shown only for medium and large screen sizes
             //can group multiple elements together and returns them, doesn't take up an extra node for the elements (div) [can insert them directly]           
@@ -77,6 +132,11 @@ class Header extends Component {
         //the navbar will only be expanded from medium to large screens
         //The collapse will open based on the boolean variable isOpen which changes based on the state variable isNavOpen
         //NavbarToggler is a button which is resposible for changing the isNavOpen state (through a function toggleNav)
+
+        //Uncontrolled forms:
+            //the innerRef will match the input typed in to the corresponding element (you can name it anything for accessing) in the DOM using 'this
+            //nav is used to style the navbar appropriately
+            //htmlFor binds the label to the corresponding input box
     }
 }
 
