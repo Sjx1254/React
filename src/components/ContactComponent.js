@@ -1,8 +1,13 @@
 import React, {Component} from 'react'; //controlled forms are only possible with class components
 import {Breadcrumb, BreadcrumbItem, Button, Label, Col, Row} from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { Control, LocalForm, Errors} from 'react-redux-form'
+import { Control, LocalForm, Errors} from 'react-redux-form' //control allows us to use the different types of inputs given by redux form
 
+const required = (val) => val && val.length; //validator variables for length, email, and number
+const maxLength = (len) => (val) => !(val) || val.length < len
+const minLength = (len) => (val) => (val) && val.length >= len
+const isNumber = (val) => !isNaN(Number(val));
+const validEmail = (val) => /^[A-Z0-0. %+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i.test(val)
 class Contact extends Component {
 
     constructor(props) {
@@ -77,6 +82,20 @@ class Contact extends Component {
                                     <Control.text model=".firstname" id="firstname" name="firstname"
                                         placeholder="First Name"
                                         className="form-control"
+                                        validators={{
+                                            required, minLength: minLength(3), maxLength: maxLength(15)
+                                        }}
+                                    />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".firstname"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required',
+                                            minLength: 'Must be greater than 2 characters',
+                                            maxLength: 'Must be 15 characters or less'
+
+                                        }}
                                     />
 
                                 </Col>
@@ -89,7 +108,21 @@ class Contact extends Component {
                                     <Control.text model=".lastname" id="lastname" name="lastname"
                                         placeholder="Last Name"
                                         className="form-control"
+                                        validators={{
+                                            required, minLength: minLength(3), maxLength: maxLength(15)
+                                        }}
                                         />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".lastname"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required',
+                                            minLength: 'Must be greater than 2 characters',
+                                            maxLength: 'Must be 15 characters or less'
+
+                                        }}
+                                    />
 
                                 </Col>
                                 
@@ -100,7 +133,22 @@ class Contact extends Component {
                                 <Col md={10}>
                                     <Control.text model=".telnum" id="telnum" name="telnum"
                                         placeholder="Tel. Number"
-                                        className="form-control" />
+                                        className="form-control" 
+                                        validators={{
+                                            required, minLength: minLength(3), maxLength: maxLength(15), isNumber
+                                        }}/>
+                                    <Errors
+                                        className="text-danger"
+                                        model=".telnum"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required',
+                                            minLength: 'Must be greater than 2 numbers',
+                                            maxLength: 'Must be 15 numbers or less',
+                                            isNumber: 'Must be a number'
+
+                                        }}
+                                    />
                                         
 
                                 </Col>
@@ -113,6 +161,20 @@ class Contact extends Component {
                                     <Control.text model=".email" id="email" name="email"
                                         placeholder="Email"
                                         className="form-control"
+                                        validators={{
+                                            required, validEmail
+                                        }}
+                                        
+                                    />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".email"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required',
+                                            validEmail: 'Invalid Email Address'
+
+                                        }}
                                     />
 
                                 </Col>
@@ -182,8 +244,14 @@ class Contact extends Component {
             //Redux form:
                 //We now use the Control.(type of input) to set the type of input for the specific row of the form
                 //There is no need for any input change/blur handlers since redux does that for us
-                //redux also puts the values entered into the form once submit is clicked (through the onSubmit event handler) into the store and displays them once handleSubmit is called(they're entered as one overall state into the store)
+                //redux also puts the values entered into the form once submit is clicked (through the onSubmit event handler) into the store and displays them once handleSubmit is called(they're each variables/parts of the overall state of the form, which are determined when you define the "model" of the control. parameter)
                 //form-control/form-check-input styles the places where you need to enter the input
+            //Validation:
+                //The validators parameter calls the 4 variables instantiated above along with their individual parameters
+                //The errors class will display the appropriate error message for the checker variables if one of the test cases fail
+                //text-danger makes the errors show up in red
+                //The required variable must be instantiated first and will likely be the first 'error' presented after a user makes his 2nd error (as after the first error the errors will track back to the first field)
+                //since they is a part of each row of the form the errors are enclosed inside the Col class for each row
 
         );
 
