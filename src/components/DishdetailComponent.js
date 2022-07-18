@@ -17,6 +17,7 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
             }
 
             this.toggleModal = this.toggleModal.bind(this)
+            this.handleSubmit = this.handleSubmit.bind(this)
 
         }
 
@@ -27,6 +28,12 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
             })
         }
 
+        handleSubmit(values) {
+            this.toggleModal();
+            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment) //the dishId is needed to segreate each comment (this isn't known when you submit the form)
+            //this is used to actually add the Comment and render it on the screen
+        }
+
         
 
         render() {
@@ -34,7 +41,7 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
                 <React.Fragment>
                     <div className = "container">
                         <div className = "col-12">
-                            <Button outline onClick = {this.toggleModal} className>
+                            <Button outline onClick = {this.toggleModal}>
                                 <span className="fa fa-pencil fa-lg"></span>Submit Comment
                             </Button>
                         
@@ -45,7 +52,7 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
                         <ModalHeader isOpen={this.state.isModelOpen} toggle={this.toggleModal}>Submit Comment</ModalHeader>
                         <ModalBody>
                             <div className="col-12">
-                                <LocalForm>
+                                <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
                                     <Row className="form-group">
                                         <Label htmlFor="rating" md={12}>Rating</Label>
                                         <Col md={10}>
@@ -68,9 +75,9 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
                                     </Row>
 
                                     <Row className="form-group">
-                                        <Label htmlFor="name" md={12}>Your Name</Label>
+                                        <Label htmlFor="author" md={12}>Your Name</Label>
                                         <Col md={10}>
-                                            <Control.text model=".name" id="name" name="name"
+                                            <Control.text model=".author" id="author" name="author"
                                                 className="form-control"
                                                 validators={{
                                                     minLength: minLength(3), maxLength: maxLength(15)
@@ -80,7 +87,7 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
 
                                             <Errors
                                                 className="text-danger"
-                                                model=".name"
+                                                model=".author"
                                                 show="touched"
                                                 messages={{
                                                     minLength: 'Must be greater than 2 characters',
@@ -124,7 +131,8 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
         }
 
         
-    }
+    } //onSubmit is passed when the LocalForm is submitted, this will submit each of the inputted values and pass them as props to handleSubmit, which will invoke addComment to create an addComment object
+      //The model argument is used when obtaining the "value" for each input of the form row
 
     function RenderDish({dish}) { //these are now props so they are objects (why they are enclosed in curly braces) (if you know what you're specifying)
         if (dish != null) {
@@ -149,7 +157,7 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
 
     }
 
-    function RenderComments({comments}) {
+    function RenderComments({comments, addComment, dishId}) {
         if (comments != null) {
             const comment = comments.map((c) => {
                 return(
@@ -166,9 +174,9 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
                     <h4>Comments</h4>
                     {comment}
 
-                    <CommentForm />
+                    <CommentForm dishId = {dishId} addComment={addComment} />
                     
-                </span>
+                </span> //addComment is passed as a prop to comment form here, the parameter is passed in as a parameter from main component
             )
         }
 
@@ -204,10 +212,12 @@ import {Control, LocalForm, Errors} from 'react-redux-form'
                     <RenderDish dish={props.dish} />
                 
                 
-                    <RenderComments comments={props.comments} />
+                    <RenderComments comments={props.comments}
+                        addComment={props.addComment}
+                        dishId={props.dish.id} /> /
                 
             </div>
-            </div>
+            </div> 
         );
     }
 

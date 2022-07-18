@@ -8,7 +8,7 @@ import Footer from './FooterComponent'
 import { Routes, Route, Navigate, useLocation, useNavigate, useParams} from 'react-router-dom'
 import About from './AboutComponent';
 import { connect } from 'react-redux';
-import { DISHES } from '../shared/dishes';
+import { addComment } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
 
 const mapStateToProps = (state) => { //maps the states from the redux store as props to use in the main component
   return {
@@ -19,6 +19,12 @@ const mapStateToProps = (state) => { //maps the states from the redux store as p
   }
 
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)) //this returns the action object addComment and calls the dispatch function to send the object created by addComment on the 4 props to the store
+
+
+})
 
 function withRouter(Component) { //implementation of withRouter
   function ComponentWithRouterProp(props) {
@@ -58,7 +64,8 @@ class Main extends Component {
     const { dishId } = useParams();
     return(
       <DishDetail dish={this.props.dishes.filter((dish) => dish.id === Number(dishId)) [0]} 
-        comments={this.props.comments.filter((comment) => comment.dishId === Number(dishId))}/>
+        comments={this.props.comments.filter((comment) => comment.dishId === Number(dishId))}
+        addComment={this.props.addComment}/> //the addComment object created from mapDispatchtoProps is passed as a prop here
     )
 
   }
@@ -96,4 +103,4 @@ class Main extends Component {
     //for the comments, since it already is an array, no [0] is needed
 }
 
-export default withRouter(connect(mapStateToProps)(Main)); //connects Redux to the component
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main)); //connects Redux to the component
