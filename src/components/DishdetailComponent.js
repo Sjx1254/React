@@ -1,6 +1,130 @@
-import React from 'react';
-import { Card, CardImg, CardBody, CardTitle, CardText, Breadcrumb, BreadcrumbItem} from 'reactstrap';
+import React, { Component } from 'react';
+import { Card, CardImg, CardBody, CardTitle, CardText, Breadcrumb, BreadcrumbItem, ModalHeader, Modal, ModalBody, Label, Col, Row, Button} from 'reactstrap';
 import { Link } from 'react-router-dom'
+import {Control, LocalForm, Errors} from 'react-redux-form'
+
+
+    const maxLength = (len) => (val) => !(val) || val.length < len
+    const minLength = (len) => (val) => (val) && val.length >= len
+
+    class CommentForm extends Component {
+        constructor(props) {
+            super(props)
+        
+
+            this.state = {
+                isModelOpen: false
+            }
+
+            this.toggleModal = this.toggleModal.bind(this)
+
+        }
+
+        toggleModal() {
+            this.setState({
+                isModelOpen: !this.state.isModelOpen
+
+            })
+        }
+
+        
+
+        render() {
+            return(
+                <React.Fragment>
+                    <div className = "container">
+                        <div className = "col-12">
+                            <Button outline onClick = {this.toggleModal} className>
+                                <span className="fa fa-pencil fa-lg"></span>Submit Comment
+                            </Button>
+                        
+                        </div>
+                    
+                    </div>
+                    <Modal isOpen={this.state.isModelOpen} toggle={this.toggleModal}>
+                        <ModalHeader isOpen={this.state.isModelOpen} toggle={this.toggleModal}>Submit Comment</ModalHeader>
+                        <ModalBody>
+                            <div className="col-12">
+                                <LocalForm>
+                                    <Row className="form-group">
+                                        <Label htmlFor="rating" md={12}>Rating</Label>
+                                        <Col md={10}>
+                                            <Control.select model=".rating" name="rating" 
+                                                className="container"
+                                                >
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+
+                                            
+                                            </Control.select>
+
+                                            
+                                        
+                                        </Col>
+                                    
+                                    </Row>
+
+                                    <Row className="form-group">
+                                        <Label htmlFor="name" md={12}>Your Name</Label>
+                                        <Col md={10}>
+                                            <Control.text model=".name" id="name" name="name"
+                                                className="form-control"
+                                                validators={{
+                                                    minLength: minLength(3), maxLength: maxLength(15)
+                                                }}
+                                            
+                                            />
+
+                                            <Errors
+                                                className="text-danger"
+                                                model=".name"
+                                                show="touched"
+                                                messages={{
+                                                    minLength: 'Must be greater than 2 characters',
+                                                    maxLength: 'Must be 15 characters or less',
+                                                   
+
+                                                }}
+                                            />
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="form-group">
+                                        <Label htmlFor="comment" md={12}>Comment</Label>
+                                        <Col md={10}>
+                                            <Control.textarea model=".comment" id="comment" name="comment"
+                                                rows="6"
+                                                className="form-control"
+                                                
+                                            
+                                            />
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="form-group">
+                                        
+                                            <Button type="submit" color="primary" className="ml-3">
+                                            Submit</Button>
+                                        
+                                    </Row>
+                                
+                                </LocalForm>
+                            </div>
+                        
+                        </ModalBody>
+                    
+                    </Modal>
+            
+
+                </React.Fragment>
+            )
+        }
+
+        
+    }
 
     function RenderDish({dish}) { //these are now props so they are objects (why they are enclosed in curly braces) (if you know what you're specifying)
         if (dish != null) {
@@ -37,10 +161,14 @@ import { Link } from 'react-router-dom'
             });
 
             return(
-                <div className="col-12 col-md-5 m-1">
+                <span className="col-12 col-md-5 m-1">
+                    
                     <h4>Comments</h4>
                     {comment}
-                </div>
+
+                    <CommentForm />
+                    
+                </span>
             )
         }
 
