@@ -8,7 +8,8 @@ import Footer from './FooterComponent'
 import { Routes, Route, Navigate, useLocation, useNavigate, useParams} from 'react-router-dom'
 import About from './AboutComponent';
 import { connect } from 'react-redux';
-import { addComment } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
+import { addComment, fetchDishes } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
+
 
 const mapStateToProps = (state) => { //maps the states from the redux store as props to use in the main component
   return {
@@ -21,10 +22,13 @@ const mapStateToProps = (state) => { //maps the states from the redux store as p
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)) //this returns the action object addComment and calls the dispatch function to send the object created by addComment on the 4 props to the store
+  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)), //this returns the action object addComment and calls the dispatch function to send the object created by addComment on the 4 props to the store
+  fetchDishes: () => { dispatch(fetchDishes()) } //here fetch dishes is called from the the fetchDishes in the store and this returns the dishes and their states and returns a fetchDish object to be used as props in the main
 
 
 })
+
+
 
 function withRouter(Component) { //implementation of withRouter
   function ComponentWithRouterProp(props) {
@@ -41,11 +45,19 @@ function withRouter(Component) { //implementation of withRouter
 
   return ComponentWithRouterProp;
 }
+
+
 class Main extends Component {
 
   constructor(props) {
     super(props);
 
+  }
+
+  
+
+  componentDidMount() {
+    this.props.fetchDishes(); //this gets the dishes and their individual states so that they can be accessed by main and rendered/shown in the other components
   }
 
 
@@ -54,7 +66,11 @@ class Main extends Component {
 
   const HomePage = () => {
     return(
-      <Home dish = {this.props.dishes.filter((dish) => dish.featured) [0]} //Main no longer has it's own built-in state, but is rather passed in the state by the store via props
+      <Home dish = {this.props.dishes.dishes.filter((dish) => dish.featured) [0]} //Main no longer has it's own built-in state, but is rather passed in the state by the store via props
+      //In the thunk lecture, we are now accessing the dishes part of the dishes state and filtering it to return the featured dish (same processfor the ID below)
+      //Two more props are passed to homepage to render in case of loading/errors (same for dishdetail)
+        dishesLoading = {this.props.dishes.isLoading}
+        dishesErrMess = {this.props.dishes.errMes}
         promotion = {this.props.promotions.filter((promo) => promo.featured) [0]}
         leader = {this.props.leaders.filter((leader) => leader.featured) [0]} />
     )
@@ -63,9 +79,12 @@ class Main extends Component {
   const DishWithId = () => {
     const { dishId } = useParams();
     return(
-      <DishDetail dish={this.props.dishes.filter((dish) => dish.id === Number(dishId)) [0]} 
+      <DishDetail dish={this.props.dishes.dishes.filter((dish) => dish.id === Number(dishId)) [0]} 
+        isLoading={this.props.dishes.isLoading}
+        errMess={this.props.dishes.errMess}
         comments={this.props.comments.filter((comment) => comment.dishId === Number(dishId))}
         addComment={this.props.addComment}/> //the addComment object created from mapDispatchtoProps is passed as a prop here
+        //passing in the
     )
 
   }

@@ -2,6 +2,7 @@ import React from 'react';
 import {Card, CardImg, CardImgOverlay,  CardTitle} from 'reactstrap';
 import { Link } from 'react-router-dom'
 import {Breadcrumb, BreadcrumbItem } from 'reactstrap'
+import { Loading } from './LoadingComponent'
 
     function RenderMenuItem({dish}) { //this will now display the card for the passed in dish that is clicked
         return (
@@ -31,14 +32,37 @@ import {Breadcrumb, BreadcrumbItem } from 'reactstrap'
     }
 
     const Menu = (props) => { //props is the parameter that is passed in
-        const menu = props.dishes.map((dish) => {  //map iterates over each item in the list, and returns a list for each "dish"
+        const menu = props.dishes.dishes.map((dish) => {  //map iterates over each item in the list, and returns a list for each "dish"
             //we are accessing the prop dishes that was defined in the app component (leveraging a state)
-            return (
-                <div key={dish.id} className="col-12 col-md-5 m-1"> 
-                    <RenderMenuItem dish={dish}/> 
-                
-                </div> //when the card is clicked, the onDishSelect function is called
-            ); //the key feature allows React to identify each element uniquely and display them accordingly (you want the key to be unique for each element)
+            //In this example, we are again accessing the dishes property of the dishes prop that is passed (from dishes.js)
+            if (props.dishes.isLoading) {
+                return(
+                    <div className="container">
+                        <div className="row">
+                            <Loading />
+                        </div>
+                    </div>
+                )
+            }
+
+            else if ( props.dishes.errMess ) {
+                return(
+                    <div className="container">
+                        <div className="row">
+                            <h4>{props.dishes.errMess}</h4>
+                        
+                        </div>
+                    
+                    </div>
+                )
+            }
+            else
+                return (
+                    <div key={dish.id} className="col-12 col-md-5 m-1"> 
+                        <RenderMenuItem dish={dish}/> 
+                    
+                    </div> //when the card is clicked, the onDishSelect function is called
+                ); //the key feature allows React to identify each element uniquely and display them accordingly (you want the key to be unique for each element)
             //li specifies each item will be rendered as a list
             //m-1 sets a margin of 1 to all 4 sides
             
