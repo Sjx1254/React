@@ -1,7 +1,7 @@
 import React, {Component} from 'react'; //controlled forms are only possible with class components
 import {Breadcrumb, BreadcrumbItem, Button, Label, Col, Row} from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { Control, LocalForm, Errors} from 'react-redux-form' //control allows us to use the different types of inputs given by redux form
+import { Control, Form, Errors, actions} from 'react-redux-form' //control allows us to use the different types of inputs given by redux form
 
 const required = (val) => val && val.length; //validator variables for length, email, and number
 const maxLength = (len) => (val) => !(val) || val.length < len
@@ -22,6 +22,7 @@ class Contact extends Component {
     handleSubmit(values) { //the preventDefault prevents the button from taking you to another page, otherwise in this case an alsert is shown displaying the current state of the component
         console.log("Current State is: " + JSON.stringify(values))
         alert("Current State is: " + JSON.stringify(values))
+        this.props.resetFeedbackForm() //resets the form from the prop passed in 
 
     }
   
@@ -75,7 +76,7 @@ class Contact extends Component {
                     </div>
 
                     <div className="col-12 col-md-9">
-                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}> 
+                        <Form model="feedback" onSubmit={(values) => this.handleSubmit(values)}> 
                             <Row className="form-group"> 
                                 <Label htmlFor="firstname" md={2}>First Name</Label>
                                 <Col md={10}>
@@ -225,7 +226,7 @@ class Contact extends Component {
                                 </Col>
                             </Row>
                         
-                        </LocalForm>
+                        </Form>
                     
                     </div>
                 
@@ -252,6 +253,8 @@ class Contact extends Component {
                 //text-danger makes the errors show up in red
                 //The required variable must be instantiated first and will likely be the first 'error' presented after a user makes his 2nd error (as after the first error the errors will track back to the first field)
                 //since they is a part of each row of the form the errors are enclosed inside the Col class for each row
+            
+            //For resetting, form is changed to a regular form so that the state/values of the form are put in the store rather than in the component's state
 
         );
 

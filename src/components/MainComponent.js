@@ -9,6 +9,7 @@ import { Routes, Route, Navigate, useLocation, useNavigate, useParams} from 'rea
 import About from './AboutComponent';
 import { connect } from 'react-redux';
 import { addComment, fetchDishes } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
+import { actions } from 'react-redux-form'
 
 
 const mapStateToProps = (state) => { //maps the states from the redux store as props to use in the main component
@@ -23,8 +24,8 @@ const mapStateToProps = (state) => { //maps the states from the redux store as p
 
 const mapDispatchToProps = (dispatch) => ({
   addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)), //this returns the action object addComment and calls the dispatch function to send the object created by addComment on the 4 props to the store
-  fetchDishes: () => { dispatch(fetchDishes()) } //here fetch dishes is called from the the fetchDishes in the store and this returns the dishes and their states and returns a fetchDish object to be used as props in the main
-
+  fetchDishes: () => { dispatch(fetchDishes()) }, //here fetch dishes is called from the the fetchDishes in the store and this returns the dishes and their states and returns a fetchDish object to be used as props in the main
+  resetFeedbackForm: () => { dispatch(actions.reset('feedback'))} //calls the dispatch function to send it to the store that the form needs to be reset. When this is accessed by main, the resetFormFeedback prop is created to trigger the reset
 
 })
 
@@ -96,7 +97,7 @@ class Main extends Component {
         <Route path="/aboutus" element={<About leaders = {this.props.leaders} />} />
         <Route exact path="/menu" element={<Menu dishes = {this.props.dishes} />} />
         <Route path="/menu/:dishId" element={<DishWithId/>} />
-        <Route exact path="/contactus" element={<Contact />} /> 
+        <Route exact path="/contactus" element={<Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} /> 
         <Route path="*" element={<Navigate to="/home" />}/>
         
       </Routes> 
@@ -120,6 +121,8 @@ class Main extends Component {
     //Exact prevents problems with both the menu and menu/:dishId being noticed by Routes
     //the dishId is the route parameter passed in, and this must be the name of the variable when using useParams
     //for the comments, since it already is an array, no [0] is needed
+  
+  //passing in the resetFeedbackForm prop to contactus to trigger the reset
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main)); //connects Redux to the component
