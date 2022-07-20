@@ -8,8 +8,8 @@ import Footer from './FooterComponent'
 import { Routes, Route, Navigate, useLocation, useNavigate, useParams} from 'react-router-dom'
 import About from './AboutComponent';
 import { connect } from 'react-redux';
-import { addComment, fetchDishes, fetchComments, fetchPromos } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
-import { actions } from 'react-redux-form'
+import { postComment, fetchDishes, fetchComments, fetchPromos } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
+import { actions } from 'react-redux-form' //addComment is used by post comment to actually add the comment to the view
 
 
 const mapStateToProps = (state) => { //maps the states from the redux store as props to use in the main component
@@ -23,7 +23,7 @@ const mapStateToProps = (state) => { //maps the states from the redux store as p
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)), //this returns the action object addComment and calls the dispatch function to send the object created by addComment on the 4 props to the store
+  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)), //this returns the action object addComment and calls the dispatch function to send the object created by addComment on the 4 props to the store
   fetchDishes: () => { dispatch(fetchDishes()) }, //here fetch dishes is called from the the fetchDishes in the store and this returns the dishes and their states and returns a fetchDish object to be used as props in the main
   resetFeedbackForm: () => { dispatch(actions.reset('feedback'))}, //calls the dispatch function to send it to the store that the form needs to be reset. When this is accessed by main, the resetFormFeedback prop is created to trigger the reset
   fetchComments: () => { dispatch(fetchComments()) },
@@ -90,7 +90,7 @@ class Main extends Component {
         errMess={this.props.dishes.errMess}
         comments={this.props.comments.comments.filter((comment) => comment.dishId === Number(dishId))}
         commentsErrMess={this.props.comments.errMess}
-        addComment={this.props.addComment}/> //the addComment object created from mapDispatchtoProps is passed as a prop here
+        postComment={this.props.postComment}/> //the addComment object created from mapDispatchtoProps is passed as a prop here
         //passing in the error message for comments
 
         //all the errors message now are passed in as props to the respective component after the handle errors for each of the action creators are properly made, through the errMess property of the state for each component

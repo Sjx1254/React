@@ -2,17 +2,51 @@ import * as ActionTypes from './ActionTypes' //this will import all exports from
 import  { DISHES } from '../shared/dishes'
 import { baseUrl } from '../shared/baseUrl'
 
-export const addComment = (dishId, rating, author, comment) => ({ //creates an addComment object
+export const addComment = (comment) => ({ //creates an addComment object (update: now pushes the comment to the store)
     type: ActionTypes.ADD_COMMENT,
-    payload: { //data that is sent to the reducer function to send to the store
+    payload: comment
+
+});
+
+export const postComment = (dishId, rating, author, comment) => (dispatch) => { //posts a comment which will be put in the redux store and saved in the server (will show even when you reload the page)
+    const newComment = {
         dishId: dishId,
         rating: rating,
         author: author,
-        comment: comment, //maps the properties to the variables of the payload
+        comment: comment
 
     }
 
-});
+    newComment.date = new Date().toISOString();
+
+    return fetch(baseUrl + 'comments', {
+        method: 'POST',
+        body: JSON.stringify(newComment), //turns comment above into a JSON object to put in the body
+        headers: {
+            'Content-Type':'application/json'
+        },
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            if (response.ok) {
+                return response; //if the request is successful, then the response returned is passed to the callback functionn below and the comment is updated
+            }
+            else {
+                let error = new Error('Error ' + response.status + ': ' + response.statusText) //sends an Error plus the status(type of error) and the message delivered by the server
+                error.response = response;
+                throw error; 
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess
+        }) 
+        .then(response => response.json()) 
+        .then(response => dispatch(addComment(response))) //sends the updated comment to dispatch which then puts it in redux store
+        .catch(error => { console.log('Post comments', error.message)
+            alert('Your comment could not be posted \n Error: ' + error.message); })
+
+}
 
 export const fetchDishes = () => (dispatch) => { //gets the dishes by dispatching the added dishes to the store, with a delay of 2000 sec (this is then accessed by the main component)
     dispatch(dishesLoading(true));

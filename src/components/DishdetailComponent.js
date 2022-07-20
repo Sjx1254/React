@@ -32,7 +32,7 @@ import { baseUrl } from '../shared/baseUrl'
 
         handleSubmit(values) {
             this.toggleModal();
-            this.props.addComment(this.props.dishId, values.rating, values.author, values.comment) //the dishId is needed to segreate each comment (this isn't known when you submit the form)
+            this.props.postComment(this.props.dishId, values.rating, values.author, values.comment) //the dishId is needed to segreate each comment (this isn't known when you submit the form)
             //this is used to actually add the Comment and render it on the screen
         }
 
@@ -159,7 +159,7 @@ import { baseUrl } from '../shared/baseUrl'
 
     }
 
-    function RenderComments({comments, addComment, dishId}) {
+    function RenderComments({comments, postComment, dishId}) {
         if (comments != null) {
             const comment = comments.map((c) => {
                 return(
@@ -176,7 +176,7 @@ import { baseUrl } from '../shared/baseUrl'
                     <h4>Comments</h4>
                     {comment}
 
-                    <CommentForm dishId = {dishId} addComment={addComment} />
+                    <CommentForm dishId = {dishId} postComment={postComment} />
                     
                 </span> //addComment is passed as a prop to comment form here, the parameter is passed in as a parameter from main component
             )
@@ -241,7 +241,7 @@ import { baseUrl } from '../shared/baseUrl'
                     
                     
                         <RenderComments comments={props.comments}
-                            addComment={props.addComment} //setting the parameters to the props passed in from main comment to the function component
+                            postComment={props.postComment} //setting the parameters to the props passed in from main comment to the function component
                             dishId={props.dish.id} /> 
                     
                 </div>
