@@ -8,7 +8,7 @@ import Footer from './FooterComponent'
 import { Routes, Route, Navigate, useLocation, useNavigate, useParams} from 'react-router-dom'
 import About from './AboutComponent';
 import { connect } from 'react-redux';
-import { addComment, fetchDishes } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
+import { addComment, fetchDishes, fetchComments, fetchPromos } from '../redux/ActionCreators' //need this to get the action object to then dispatch to the store
 import { actions } from 'react-redux-form'
 
 
@@ -25,8 +25,9 @@ const mapStateToProps = (state) => { //maps the states from the redux store as p
 const mapDispatchToProps = (dispatch) => ({
   addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)), //this returns the action object addComment and calls the dispatch function to send the object created by addComment on the 4 props to the store
   fetchDishes: () => { dispatch(fetchDishes()) }, //here fetch dishes is called from the the fetchDishes in the store and this returns the dishes and their states and returns a fetchDish object to be used as props in the main
-  resetFeedbackForm: () => { dispatch(actions.reset('feedback'))} //calls the dispatch function to send it to the store that the form needs to be reset. When this is accessed by main, the resetFormFeedback prop is created to trigger the reset
-
+  resetFeedbackForm: () => { dispatch(actions.reset('feedback'))}, //calls the dispatch function to send it to the store that the form needs to be reset. When this is accessed by main, the resetFormFeedback prop is created to trigger the reset
+  fetchComments: () => { dispatch(fetchComments()) },
+  fetchPromos: () => { dispatch(fetchPromos()) }
 })
 
 
@@ -58,7 +59,9 @@ class Main extends Component {
   
 
   componentDidMount() {
-    this.props.fetchDishes(); //this gets the dishes and their individual states so that they can be accessed by main and rendered/shown in the other components
+    this.props.fetchDishes(); //this gets the dishes and their individual properties so that they can be accessed by main and rendered/shown in the other components (same for promos and comments)
+    this.props.fetchPromos();
+    this.props.fetchComments(); 
   }
 
 
@@ -72,7 +75,9 @@ class Main extends Component {
       //Two more props are passed to homepage to render in case of loading/errors (same for dishdetail)
         dishesLoading = {this.props.dishes.isLoading}
         dishesErrMess = {this.props.dishes.errMes}
-        promotion = {this.props.promotions.filter((promo) => promo.featured) [0]}
+        promotion = {this.props.promotions.promotions.filter((promo) => promo.featured) [0]}
+        promosLoading = {this.props.promotions.isLoading}
+        promosErrMess = {this.props.promotions.errMes}
         leader = {this.props.leaders.filter((leader) => leader.featured) [0]} />
     )
   }
@@ -83,9 +88,10 @@ class Main extends Component {
       <DishDetail dish={this.props.dishes.dishes.filter((dish) => dish.id === Number(dishId)) [0]} 
         isLoading={this.props.dishes.isLoading}
         errMess={this.props.dishes.errMess}
-        comments={this.props.comments.filter((comment) => comment.dishId === Number(dishId))}
+        comments={this.props.comments.comments.filter((comment) => comment.dishId === Number(dishId))}
+        commentsErrMess={this.props.comments.errMess}
         addComment={this.props.addComment}/> //the addComment object created from mapDispatchtoProps is passed as a prop here
-        //passing in the
+        //passing in the error message for comments
     )
 
   }

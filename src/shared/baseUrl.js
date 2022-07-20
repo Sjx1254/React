@@ -1,0 +1,1 @@
+export const baseUrl = 'http://localhost:3001/' //setups communication/connection/updates with the server
