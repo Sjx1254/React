@@ -8,7 +8,7 @@ export const Dishes = (state = { isLoading: true, errMess: null, dishes: []}, ac
         case ActionTypes.DISHES_LOADING:
             return {... state, isLoading: true, errMess: null, dishes: []}
         case ActionTypes.DISHES_FAILED:
-            return {... state, isLoading: false, errMess: action.payload} //copies whatever was in that state, makes a copy, and changes the three parts of it
+            return {... state, isLoading: false, errMess: action.payload, dishes: []} //copies whatever was in that state, makes a copy, and changes the three parts of it
         default:
             return state; //return unmodified state
     }

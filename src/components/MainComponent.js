@@ -74,10 +74,10 @@ class Main extends Component {
       //In the thunk lecture, we are now accessing the dishes part of the dishes state and filtering it to return the featured dish (same processfor the ID below)
       //Two more props are passed to homepage to render in case of loading/errors (same for dishdetail)
         dishesLoading = {this.props.dishes.isLoading}
-        dishesErrMess = {this.props.dishes.errMes}
+        dishesErrMess = {this.props.dishes.errMess}
         promotion = {this.props.promotions.promotions.filter((promo) => promo.featured) [0]}
         promosLoading = {this.props.promotions.isLoading}
-        promosErrMess = {this.props.promotions.errMes}
+        promosErrMess = {this.props.promotions.errMess}
         leader = {this.props.leaders.filter((leader) => leader.featured) [0]} />
     )
   }
@@ -92,6 +92,8 @@ class Main extends Component {
         commentsErrMess={this.props.comments.errMess}
         addComment={this.props.addComment}/> //the addComment object created from mapDispatchtoProps is passed as a prop here
         //passing in the error message for comments
+
+        //all the errors message now are passed in as props to the respective component after the handle errors for each of the action creators are properly made, through the errMess property of the state for each component
     )
 
   }
